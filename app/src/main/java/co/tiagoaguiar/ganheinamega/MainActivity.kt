@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -25,8 +24,8 @@ class MainActivity : AppCompatActivity() {
         preferences = getSharedPreferences("db", Context.MODE_PRIVATE)
         val result = preferences.getString("result", null)
 
-        if(result != null) {
-            txtResult.text = "Ultima aposta: $result"
+        result?.let {
+            txtResult.text = "Ultima aposta: ${it}"
         }
 
         btnGenerator.setOnClickListener {
@@ -64,8 +63,9 @@ class MainActivity : AppCompatActivity() {
 
         txtResult.text = numbers.joinToString(" - ")
 
-        val editor = preferences.edit()
-        editor.putString("result", txtResult.text.toString())
-        editor.apply()
+        preferences.edit().apply {
+            putString("result", txtResult.text.toString())
+            apply()
+        }
     }
 }
