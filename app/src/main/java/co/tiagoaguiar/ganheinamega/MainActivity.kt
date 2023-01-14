@@ -1,5 +1,7 @@
 package co.tiagoaguiar.ganheinamega
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +12,8 @@ import android.widget.Toast
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var preferences: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -17,6 +21,13 @@ class MainActivity : AppCompatActivity() {
         val editText: EditText = findViewById(R.id.edit_number)
         val txtResult: TextView = findViewById(R.id.txt_result)
         val btnGenerator: Button = findViewById(R.id.btn_generate)
+
+        preferences = getSharedPreferences("db", Context.MODE_PRIVATE)
+        val result = preferences.getString("result", null)
+
+        if(result != null) {
+            txtResult.text = "Ultima aposta: $result"
+        }
 
         btnGenerator.setOnClickListener {
             val text = editText.text.toString()
@@ -52,5 +63,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         txtResult.text = numbers.joinToString(" - ")
+
+        val editor = preferences.edit()
+        editor.putString("result", txtResult.text.toString())
+        editor.apply()
     }
 }
